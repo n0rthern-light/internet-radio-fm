@@ -1,29 +1,7 @@
 # internet-radio-fm
 
-## Project setup
-```
-npm install
-```
+### Old classy BMW Radio App
+Preview Live [DEMO](http://promuj-insta.pl/radio-fm/)
 
-### Compiles and hot-reloads for development
-```
-npm run serve
-```
-
-### Compiles and minifies for production
-```
-npm run build
-```
-
-### Run your tests
-```
-npm run test
-```
-
-### Lints and fixes files
-```
-npm run lint
-```
-
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+### How to use?
+Use 1-6 buttons on radio to change stations
