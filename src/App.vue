@@ -3,7 +3,10 @@
     <div class="wrapper">
       <div id="image">
         <div id="display_of_radio">
-          <span>Eska</span>
+          <div>
+            <span v-if="hasAnimation">{{txtAnimation}}</span>
+            <span v-else>{{stations[currentIndex].name}}</span>
+          </div>
         </div>
         <div class="switch_station" @click="stationClick(2)">2</div>
         <div class="switch_station" @click="stationClick(3)">3</div>
@@ -12,28 +15,71 @@
         <div class="switch_station" @click="stationClick(6)">6</div>
         <div class="switch_station" @click="stationClick(1)">1</div>
       </div>
-    <div id="legend">
-      <p>#1 - Eska</p>
-      <p>#2 - Radio Zet</p>
-      <p>#3 - RMF FM</p>
-      <p>#4 - Radio Maryja</p>
-      <p>#5 - Radio Bielsko</p>
-      <p>#6 - Anty-Radio</p>
-    </div>
     </div>
   </div>
 </template>
 
 <script>
-
+import {Howl} from 'howler';
 export default {
   name: 'app',
   components: {
   },
+  data () {
+    return {
+      sound: null,
+      stations: [
+        {
+          name: 'OFF', src:''
+        },
+        {name: 'Radio Katowice', src: 'http://stream4.nadaje.com:9212/radiokatowice'},
+        {name: 'Radio Kraków', src: 'http://stream3.nadaje.com:9116/radiokrakow'},
+        {name: 'Radio Wrocław', src: 'http://stream4.nadaje.com:9240/prw'},
+        {name: 'Radio Szczecin', src: 'http://stream4.nadaje.com:11986/prs'},
+        {name: 'Muzo', src: 'http://stream4.nadaje.com:8002/muzo'},
+        {name: 'Muzyczne Radio', src: 'http://stream3.nadaje.com:9000/;shoutcast1'}
+      ],
+      currentIndex: 0,
+      hasAnimation: false,
+      txtAnimation: ''
+    }
+  },
+  mounted () {
+
+  },
   methods: {
     stationClick(num_station) {
-      // eslint-disable-next-line
-      console.log('station clicked', num_station);
+      this.currentIndex = num_station;
+
+      if(this.sound) {
+        this.sound.stop();
+      }
+
+      this.sound = new Howl({
+        src: this.stations[this.currentIndex].src,
+        html5: true,
+        autoplay: true
+      });
+
+      this.sound.play();
+      this.hasAnimation = true;
+      let interv = setInterval(() => {
+        // eslint-disable-next-line
+        //console.log(this.sound._state);
+        if(this.sound._state != 'loaded') {
+          this.hasAnimation = true;
+          this.txtAnimation += '.';
+          if(this.txtAnimation.length > 10) {
+            this.txtAnimation = '';
+          }
+          // eslint-disable-next-line
+          console.log(this.hasAnimation);
+        } else {
+          clearInterval(interv);
+          this.hasAnimation = false;
+          this.txtAnimation = '';
+        }
+      }, 150);
     }
   }
 }
@@ -75,10 +121,6 @@ export default {
   position: relative;
 }
 
-#legend {
-  width: 130px;
-  margin: 35px auto 0 auto;
-}
 
 #display_of_radio {
   top: 78px;
@@ -92,8 +134,8 @@ export default {
   text-align: center;
 }
 
-#display_of_radio span{
-  font-size: 2.0em;
+#display_of_radio div{
+  padding-top: 10px;
   font-weight: 600;
   color: orange;
 }
